@@ -1,0 +1,26 @@
+name: 功能建议
+description: 提出有明确使用场景的功能、报告体验或可访问性改进建议。
+title: "[建议]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决的使用问题
+      description: 请说明目标用户与当前流程中的障碍。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 描述期望的交互、报告内容或实现方向。
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: 对使用边界的影响
+      description: 说明建议不会把初筛结果表述为最终结论、降重服务或官方检测替代品。
+    validations:
+      required: true

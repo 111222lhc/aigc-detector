@@ -33,6 +33,10 @@
 - [十轮迭代验证记录](docs/TEN_ITERATION_VALIDATION.md)
 - [冻结短文本回归审计](docs/FROZEN_SHORT_REGRESSION_AUDIT.md)
 
+## 协作与部署
+
+项目以 [MIT 许可证](LICENSE) 公开。参与改进前请阅读 [贡献指南](CONTRIBUTING.md)、[安全政策](SECURITY.md) 与 [部署和自定义域名指南](docs/DEPLOYMENT.md)。如需提交缺陷或功能建议，请使用仓库的结构化 Issue 模板；其中请勿包含真实论文、密钥或其他个人数据。
+
 ## 本地运行
 
 本项目使用 React、TypeScript、Express、tRPC、Drizzle ORM 和 MySQL。请先准备 Node.js 22+、pnpm 与 MySQL/TiDB 兼容数据库。
