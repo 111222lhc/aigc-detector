@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { validateFileInput, validateTextForAnalysis, type SourceType } from "@/lib/paperValidation";
 import * as mammoth from "mammoth";
 import { AlertCircle, ArrowRight, BookOpenCheck, FileUp, History, Loader2, ScanSearch, ShieldCheck, Sparkles, X } from "lucide-react";
-import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 
 async function extractFileText(file: File, sourceType: SourceType): Promise<string> {
@@ -48,28 +48,35 @@ const liveAuditText = [
   "在报告呈现方面，系统将较长文本切分为若干检测窗口，并把每个窗口的风险分数、等级与原文片段共同列出。阅读者可先关注较高分窗口，再回到全文核对论证逻辑、事实依据和个人写作过程。",
 ].join("\n\n").repeat(3);
 
+// 由 server/printLiveAuditFixture.ts 使用当前 Iter5 引擎生成；仅用于开发环境的同步视觉核验。
+const actualModelAuditReport: ReportData = {
+  overallScore: 55,
+  riskLevel: "medium",
+  charCount: 771,
+  segmentCount: 2,
+  modelVersion: "iter5-char-2to4gram",
+  distribution: { low: 0, medium: 2, high: 0 },
+  segments: [
+    { position: 1, score: 59, riskLevel: "medium", charCount: 596, content: "本研究围绕高校学习场景中的文本辅助工具展开观察。研究首先梳理不同写作任务的结构要求，再根据访谈记录与公开材料归纳使用者在资料检索、提纲调整和语言润色环节的常见做法。为避免把单一语言特征直接等同于作者身份，分析过程保留了写作目标、引用记录、修改痕迹和版本演变等上下文信息。研究结果仅用于说明文本模式的统计差异，不构成对个人或作品来源的最终判断。在报告呈现方面，系统将较长文本切分为若干检测窗口，并把每个窗口的风险分数、等级与原文片段共同列出。阅读者可先关注较高分窗口，再回到全文核对论证逻辑、事实依据和个人写作过程。本研究围绕高校学习场景中的文本辅助工具展开观察。研究首先梳理不同写作任务的结构要求，再根据访谈记录与公开材料归纳使用者在资料检索、提纲调整和语言润色环节的常见做法。为避免把单一语言特征直接等同于作者身份，分析过程保留了写作目标、引用记录、修改痕迹和版本演变等上下文信息。研究结果仅用于说明文本模式的统计差异，不构成对个人或作品来源的最终判断。在报告呈现方面，系统将较长文本切分为若干检测窗口，并把每个窗口的风险分数、等级与原文片段共同列出。阅读者可先关注较高分窗口，再回到全文核对论证逻辑、事实依据和个人写作过程。本研究围绕高校学习场景中的文本辅助工具展开观察。研究首先梳理不同写作任务的结构要求，再根据访谈记录与公开材料归纳使用者在资料检索、提纲调整和语言润色环节的常见做法。" },
+    { position: 2, score: 43, riskLevel: "medium", charCount: 175, content: "为避免把单一语言特征直接等同于作者身份，分析过程保留了写作目标、引用记录、修改痕迹和版本演变等上下文信息。研究结果仅用于说明文本模式的统计差异，不构成对个人或作品来源的最终判断。在报告呈现方面，系统将较长文本切分为若干检测窗口，并把每个窗口的风险分数、等级与原文片段共同列出。阅读者可先关注较高分窗口，再回到全文核对论证逻辑、事实依据和个人写作过程。" },
+  ],
+};
+
 export default function Home() {
   const [, navigate] = useLocation();
   const { user, isAuthenticated, loading } = useAuth();
   const isVisualAudit = import.meta.env.DEV && new URLSearchParams(window.location.search).has("visual-audit-report");
   const isLiveAudit = import.meta.env.DEV && new URLSearchParams(window.location.search).has("live-audit-report");
-  const [title, setTitle] = useState(() => isVisualAudit ? "报告版式视觉核验样稿" : "未命名文档");
-  const [text, setText] = useState("");
+  const [title, setTitle] = useState(() => isVisualAudit ? "报告版式视觉核验样稿" : isLiveAudit ? "真实检测结果全链路核验文档" : "未命名文档");
+  const [text, setText] = useState(() => isLiveAudit ? liveAuditText : "");
   const [sourceType, setSourceType] = useState<SourceType>("text");
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [report, setReport] = useState<ReportData | null>(() => isVisualAudit ? visualAuditReport : null);
+  const [report, setReport] = useState<ReportData | null>(() => isVisualAudit ? visualAuditReport : isLiveAudit ? actualModelAuditReport : null);
   const fileRef = useRef<HTMLInputElement>(null);
   const analyze = trpc.detection.analyze.useMutation({ onSuccess: data => { setReport(data); window.setTimeout(() => document.getElementById("report")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); } });
   const save = trpc.detection.save.useMutation({ onSuccess: data => navigate(`/reports/${data.reportId}`) });
-  useEffect(() => {
-    if (!isLiveAudit) return;
-    setTitle("真实检测结果全链路核验文档");
-    setText(liveAuditText);
-    analyze.mutate({ title: "真实检测结果全链路核验文档", sourceType: "text", text: liveAuditText });
-  }, [isLiveAudit]);
-
   const processFile = async (file?: File) => {
     if (!file) return;
     setFileError(null);

@@ -78,7 +78,7 @@ export function ReportPanel({ report, title, savedAt, onSave, saving }: { report
 
   return (
     <section className="report-shell mt-10 pb-16" aria-label="AIGC文本特征检测报告">
-      <article className="report-paper overflow-hidden rounded-[22px] border border-[#dbe5dc] bg-white shadow-[0_20px_60px_rgba(37,56,43,0.08)]">
+      <article className="report-paper report-web-document overflow-hidden rounded-[22px] border border-[#dbe5dc] bg-white shadow-[0_20px_60px_rgba(37,56,43,0.08)]">
         <header className="report-cover bg-[#173f2b] px-6 py-7 text-white sm:px-9 sm:py-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
@@ -167,6 +167,94 @@ export function ReportPanel({ report, title, savedAt, onSave, saving }: { report
         </section>
 
         <footer className="border-t border-[#e6ece6] bg-white px-6 py-6 sm:px-9"><div className="flex flex-col justify-between gap-3 text-xs leading-5 text-[#75847a] sm:flex-row"><p>文析 AIGC 检测 · 模型版本 {report.modelVersion} · 报告编号 {reportCode}</p><p>请保留写作过程、参考文献与版本记录作为人工复核依据。</p></div></footer>
+      </article>
+
+      <article className="report-print-document hidden" aria-label="A4打印版文本特征评估报告">
+        <section className="print-report-page print-report-cover">
+          <div className="print-running-head"><span>文析 AIGC 文本特征评估</span><span>{reportCode}</span></div>
+          <div className="print-cover-title-block">
+            <p className="print-kicker">AI GENERATED TEXT SIGNAL REVIEW</p>
+            <h1>文本特征检测报告</h1>
+            <p className="print-subtitle">简明打印版 · 供人工复核与归档</p>
+          </div>
+
+          <div className="print-lead-grid">
+            <div className="print-score-box" style={{ borderColor: RISK_META[report.riskLevel].color }}>
+              <span>总体风险分</span>
+              <strong style={{ color: RISK_META[report.riskLevel].color }}>{report.overallScore}<em>%</em></strong>
+              <b style={{ color: RISK_META[report.riskLevel].color }}>{RISK_META[report.riskLevel].label}</b>
+            </div>
+            <div className="print-lead-text">
+              <h2>{conclusion.heading}</h2>
+              <p>{conclusion.detail}</p>
+              <p className="print-boundary">本报告衡量文本窗口与训练语料中的生成文本特征接近程度，不用于确认作者身份、原创性或违规事实。</p>
+            </div>
+          </div>
+
+          <dl className="print-document-facts">
+            <div><dt>被检文档</dt><dd>{title}</dd></div>
+            <div><dt>报告编号</dt><dd className="print-mono">{reportCode}</dd></div>
+            <div><dt>生成时间</dt><dd>{reportDate}</dd></div>
+            <div><dt>模型版本</dt><dd>{report.modelVersion}</dd></div>
+            <div><dt>纳入字符</dt><dd>{report.charCount.toLocaleString()}</dd></div>
+            <div><dt>检测窗口</dt><dd>{report.segmentCount} 个</dd></div>
+          </dl>
+
+          <section className="print-distribution-block" aria-label="窗口风险分布">
+            <div className="print-section-label">风险分布概览</div>
+            <div className="print-distribution-chart">
+              {summaryData.map(item => <div key={item.name} className="print-distribution-column"><div className="print-distribution-value">{item.value}</div><div className="print-distribution-track"><span style={{ height: `${report.segmentCount ? Math.max(8, Math.round((item.value / report.segmentCount) * 100)) : 0}%`, background: item.fill }} /></div><div>{item.name}</div></div>)}
+            </div>
+            <div className="print-risk-legend"><span><i className="print-dot low" />低风险 0–29</span><span><i className="print-dot medium" />中风险 30–69</span><span><i className="print-dot high" />高风险 70–100</span></div>
+          </section>
+          <div className="print-cover-note">优先阅读中风险与高风险窗口，并结合提纲、草稿、版本记录、引文与数据来源进行人工判断。</div>
+          <div className="print-page-foot">文析 AIGC 文本特征评估报告 · {reportCode}</div>
+        </section>
+
+        <section className="print-report-page print-review-guide">
+          <div className="print-running-head"><span>文析 AIGC 文本特征评估</span><span>复核导航</span></div>
+          <p className="print-kicker">REVIEW GUIDE</p>
+          <h2>检测范围与复核导航</h2>
+          <p className="print-guide-intro">本页用于在阅读原文证据稿前确认检测范围、风险层级与优先复核位置。颜色仅表示模型风险分层，不等同于学术结论。</p>
+          <div className="print-guide-metrics">
+            <div><span>低风险窗口</span><strong>{report.distribution.low}</strong><em>0–29</em></div>
+            <div><span>中风险窗口</span><strong>{report.distribution.medium}</strong><em>30–69</em></div>
+            <div><span>高风险窗口</span><strong>{report.distribution.high}</strong><em>70–100</em></div>
+            <div><span>重点复核窗口</span><strong>{reviewCount}</strong><em>中风险 + 高风险</em></div>
+          </div>
+          <div className="print-review-columns">
+            <section><h3>如何阅读证据稿</h3><ol><li>按原文顺序阅读窗口，先看上下文，再看风险分。</li><li>底色对应窗口分级；页边数字为该窗口的风险分。</li><li>同一段落可能受长度切分影响，应避免脱离上下文判断。</li></ol></section>
+            <section><h3>建议保留的复核材料</h3><ul><li>写作提纲、草稿与版本历史</li><li>引文、数据、实验记录与采访材料</li><li>高风险窗口前后的完整上下文</li></ul></section>
+          </div>
+          <section className="print-priority-index"><h3>优先复核索引</h3>{signalSegments.length ? <div>{signalSegments.map(segment => <div key={segment.position}><span>窗口 #{String(segment.position).padStart(2, "0")}</span><b style={{ color: RISK_META[segment.riskLevel].color }}>{segment.score}% · {RISK_META[segment.riskLevel].label}</b><p>{segment.content.slice(0, 86)}{segment.content.length > 86 ? "……" : ""}</p></div>)}</div> : <p>当前文档未出现中风险或高风险窗口；仍建议结合写作过程进行人工核验。</p>}</section>
+          <div className="print-page-foot">第 2 页 · 复核导航 · {reportCode}</div>
+        </section>
+
+        <section className="print-evidence-section">
+          <div className="print-evidence-heading"><div><p className="print-kicker">ANNOTATED TEXT EVIDENCE</p><h2>原文证据稿</h2><p>以下内容按原文窗口顺序连续排列。色块表示窗口风险层级，保留原文文本以支持上下文复核。</p></div><div className="print-evidence-meta"><span>被检文档</span><strong>{title}</strong></div></div>
+          {report.segments.map((segment, index) => {
+            const meta = RISK_META[segment.riskLevel];
+            return <article key={segment.position} className="print-evidence-window" style={{ borderLeftColor: meta.color }}>
+              <div className="print-evidence-window-meta"><span>窗口 {String(segment.position).padStart(2, "0")}</span><strong style={{ color: meta.color }}>{segment.score}%</strong><em>{meta.label}</em></div>
+              <p><span style={{ background: meta.soft }}>{segment.content}</span></p>
+              <div className="print-evidence-window-foot"><span>原文顺序 {index + 1} / {report.segmentCount}</span><span>{segment.charCount.toLocaleString()} 字符</span></div>
+            </article>;
+          })}
+        </section>
+
+        <section className="print-report-ending">
+          <div className="print-running-head"><span>文析 AIGC 文本特征评估</span><span>复核记录</span></div>
+          <p className="print-kicker">REVIEW RECORD</p>
+          <h2>报告使用说明</h2>
+          <p>本报告由当前模型版本 {report.modelVersion} 生成，作为文本特征复核的辅助材料。请不要将风险分直接用于作者身份确认、纪律处分、学术诚信认定或自动化处置。</p>
+          <div className="print-ending-grid"><div><span>报告编号</span><strong>{reportCode}</strong></div><div><span>重点复核</span><strong>{reviewCount} 个窗口</strong></div><div><span>生成时间</span><strong>{reportDate}</strong></div></div>
+          <div className="print-record-grid">
+            <section className="print-review-checklist"><h3>建议人工核验清单</h3><ul><li><span>01</span> 核对提纲、草稿与版本历史是否完整。</li><li><span>02</span> 回读重点窗口前后的完整上下文。</li><li><span>03</span> 核验引用、数据和研究过程材料。</li></ul></section>
+            <section className="print-review-notes"><h3>复核记录</h3><p>供人工填写核验结论、已查材料与后续处理建议。</p><div className="print-note-lines" aria-label="人工复核记录填写区域"><i /><i /><i /><i /></div></section>
+          </div>
+          <div className="print-usage-boundary"><strong>使用边界</strong><span>风险分仅用于安排人工复核顺序。任何最终结论均应建立在完整文本、写作过程与可核验材料之上。</span></div>
+          <div className="print-page-foot">文析 AIGC 文本特征评估报告 · 仅供人工复核与归档</div>
+        </section>
       </article>
     </section>
   );

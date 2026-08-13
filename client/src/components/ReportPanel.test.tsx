@@ -51,11 +51,14 @@ describe("ReportPanel", () => {
     render(<ReportPanel report={highRiskReport} title="测试论文" savedAt="2026-08-13T00:00:00.000Z" />);
 
     expect(screen.getByText("检测报告")).toBeTruthy();
-    expect(screen.getByText("建议优先人工复核")).toBeTruthy();
+    expect(screen.getAllByText("建议优先人工复核")).toHaveLength(2);
     expect(screen.getByText("报告解读")).toBeTruthy();
     expect(screen.getByText("窗口检测明细")).toBeTruthy();
-    expect(screen.getByText("重点复核窗口")).toBeTruthy();
-    expect(screen.getAllByText("这是高风险窗口。")).toHaveLength(2);
+    expect(screen.getAllByText("重点复核窗口")).toHaveLength(2);
+    expect(screen.getAllByText("这是高风险窗口。")).toHaveLength(4);
+    expect(screen.getByLabelText("A4打印版文本特征评估报告")).toBeTruthy();
+    expect(screen.getByText("原文证据稿")).toBeTruthy();
+    expect(screen.getByText("检测范围与复核导航")).toBeTruthy();
   });
 
   it("支持保存、调用浏览器打印导出PDF，以及下载窗口明细CSV", () => {

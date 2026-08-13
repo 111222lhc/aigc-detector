@@ -110,12 +110,14 @@
 }
 
 @media print {
-  @page { size: A4; margin: 12mm; }
+  @page { size: A4; margin: 13mm 14mm 15mm; }
   html, body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   nav, footer, button, .report-actions { display: none !important; }
   body:has(#report) main > section:not(:has(#report)), body:has(#report) main > footer, body:has(#report) section:has(#report) > :not(#report) { display: none !important; }
   body, .report-shell { background: white !important; }
   .report-shell { margin: 0 !important; padding: 0 !important; }
+  .report-web-document { display: none !important; }
+  .report-print-document { display: block !important; color: #1f2d25 !important; font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; }
   .report-paper { box-shadow: none !important; border: 0 !important; border-radius: 0 !important; }
   .report-cover { break-inside: avoid; }
   .report-avoid-break, .report-detail-row { break-inside: avoid; page-break-inside: avoid; }
@@ -124,6 +126,49 @@
   .report-print-distribution { display: grid !important; gap: 0.8rem; padding: 1.25rem 0; }
   .report-print-distribution + * { display: none; }
   .recharts-responsive-container { display: none !important; }
+  .print-report-page { min-height: 252mm; position: relative; box-sizing: border-box; }
+  .print-report-ending { min-height: 232mm; position: relative; box-sizing: border-box; }
+  .print-report-cover, .print-review-guide { break-after: page; page-break-after: always; }
+  .print-running-head { display: flex; justify-content: space-between; border-bottom: 0.5pt solid #3b5a45; padding-bottom: 3mm; color: #617469; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; letter-spacing: 0.08em; }
+  .print-cover-title-block { padding: 11mm 0 7mm; border-bottom: 0.75pt solid #bfcbbf; }
+  .print-kicker { margin: 0; color: #66806d; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; font-weight: 700; letter-spacing: 0.18em; }
+  .print-cover-title-block h1 { margin: 4mm 0 1.5mm; color: #193a28; font-size: 27pt; font-weight: 600; letter-spacing: 0.04em; }
+  .print-subtitle { margin: 0; color: #65746a; font-size: 12pt; }
+  .print-lead-grid { display: grid; grid-template-columns: 40mm 1fr; gap: 8mm; padding: 7mm 0; border-bottom: 0.5pt solid #d6dfd7; }
+  .print-score-box { border: 1.5pt solid; padding: 5mm 4mm; text-align: center; }
+  .print-score-box span, .print-score-box b { display: block; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; letter-spacing: 0.08em; }
+  .print-score-box strong { display: block; margin: 2mm 0 1mm; font-family: "Noto Sans SC", sans-serif; font-size: 29pt; line-height: 1; }
+  .print-score-box em { font-size: 12pt; font-style: normal; }
+  .print-lead-text h2 { margin: 1mm 0 3mm; font-size: 15pt; }
+  .print-lead-text p { margin: 0; font-size: 9.5pt; line-height: 1.85; }
+  .print-boundary { margin-top: 3mm !important; color: #68756c; font-size: 8.5pt !important; }
+  .print-document-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 6mm 0 6mm; border-top: 0.5pt solid #d4ded5; border-left: 0.5pt solid #d4ded5; }
+  .print-document-facts div { min-height: 10mm; padding: 2mm 3mm; border-right: 0.5pt solid #d4ded5; border-bottom: 0.5pt solid #d4ded5; }
+  .print-document-facts dt { color: #738178; font-family: "Noto Sans SC", sans-serif; font-size: 7.5pt; letter-spacing: 0.08em; }
+  .print-document-facts dd { margin: 1.2mm 0 0; color: #27362d; font-size: 9pt; overflow-wrap: anywhere; }
+  .print-mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 8pt !important; }
+  .print-section-label { margin-bottom: 4mm; color: #253a2d; font-size: 12pt; font-weight: 700; }
+  .print-distribution-chart { display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; gap: 7mm; height: 30mm; padding: 2mm 8mm 0; border-bottom: 0.75pt solid #aebbae; }
+  .print-distribution-column { display: grid; grid-template-rows: 4mm 20mm 5mm; justify-items: center; color: #5c6b61; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; }
+  .print-distribution-value { color: #26382d; font-weight: 700; }
+  .print-distribution-track { display: flex; height: 20mm; align-items: end; }
+  .print-distribution-track span { display: block; width: 16mm; min-height: 2mm; }
+  .print-risk-legend { display: flex; flex-wrap: wrap; gap: 5mm; margin-top: 4mm; color: #65746a; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; }
+  .print-dot { display: inline-block; width: 2.5mm; height: 2.5mm; margin-right: 1.2mm; vertical-align: -0.35mm; border-radius: 50%; }.print-dot.low { background: #47835c; }.print-dot.medium { background: #c77d2e; }.print-dot.high { background: #bd4545; }
+  .print-cover-note { margin-top: 4mm; border-left: 2pt solid #839a88; padding-left: 3mm; color: #5f6e64; font-size: 8.5pt; line-height: 1.7; }
+  .print-page-foot { position: absolute; right: 0; bottom: 0; left: 0; border-top: 0.5pt solid #c9d4ca; padding-top: 2.5mm; color: #8b978e; font-family: "Noto Sans SC", sans-serif; font-size: 7.5pt; text-align: center; }
+  .print-review-guide { padding-top: 0; }
+  .print-review-guide h2, .print-evidence-heading h2, .print-report-ending h2 { margin: 5mm 0 2.5mm; color: #193a28; font-size: 20pt; font-weight: 600; }
+  .print-guide-intro, .print-evidence-heading > div > p, .print-report-ending > p { margin: 0; color: #516258; font-size: 9.5pt; line-height: 1.85; }
+  .print-guide-metrics { display: grid; grid-template-columns: repeat(4, 1fr); margin: 7mm 0; border-top: 0.5pt solid #d4ded5; border-left: 0.5pt solid #d4ded5; }
+  .print-guide-metrics div { padding: 4mm 3mm; border-right: 0.5pt solid #d4ded5; border-bottom: 0.5pt solid #d4ded5; }
+  .print-guide-metrics span, .print-guide-metrics em { display: block; color: #6c7a70; font-family: "Noto Sans SC", sans-serif; font-size: 7.5pt; font-style: normal; }.print-guide-metrics strong { display: block; margin: 1.5mm 0; color: #273a2e; font-size: 18pt; }
+  .print-review-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; margin-bottom: 8mm; }.print-review-columns section { border-top: 1pt solid #51715b; padding-top: 3mm; }.print-review-columns h3, .print-priority-index h3 { margin: 0 0 2mm; color: #294933; font-size: 11pt; }.print-review-columns ol, .print-review-columns ul { margin: 0; padding-left: 5mm; color: #56665b; font-size: 8.5pt; line-height: 1.8; }
+  .print-priority-index { border: 0.5pt solid #d2ddd3; padding: 4mm; background: #fbfdfb; }.print-priority-index > div { display: grid; gap: 2.2mm; }.print-priority-index > div > div { display: grid; grid-template-columns: 26mm 28mm 1fr; gap: 2mm; border-top: 0.5pt solid #e0e7e0; padding-top: 2mm; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; }.print-priority-index p { margin: 0; color: #5d6c62; font-size: 8pt; line-height: 1.5; }.print-priority-index b { font-weight: 700; }
+  .print-evidence-section { break-before: page; page-break-before: always; }.print-evidence-heading { display: flex; justify-content: space-between; gap: 8mm; margin-bottom: 7mm; border-bottom: 1pt solid #466951; padding-bottom: 5mm; }.print-evidence-heading h2 { margin-top: 2mm; }.print-evidence-meta { max-width: 45mm; padding-top: 3mm; color: #617168; font-family: "Noto Sans SC", sans-serif; font-size: 8pt; text-align: right; }.print-evidence-meta span, .print-evidence-meta strong { display: block; }.print-evidence-meta strong { margin-top: 1mm; color: #304234; font-size: 9pt; overflow-wrap: anywhere; }
+  .print-evidence-window { position: relative; margin: 0 0 5mm; border-left: 2.25pt solid; padding: 2.5mm 4mm 2.5mm 5mm; break-inside: avoid; page-break-inside: avoid; }.print-evidence-window-meta { display: flex; align-items: baseline; gap: 3mm; margin-bottom: 2mm; color: #65756b; font-family: "Noto Sans SC", sans-serif; font-size: 7.5pt; }.print-evidence-window-meta strong { font-size: 11pt; }.print-evidence-window-meta em { font-style: normal; }.print-evidence-window p { margin: 0; color: #24342a; font-size: 10pt; line-height: 1.92; text-align: justify; }.print-evidence-window p span { box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 0.55mm 1mm; }.print-evidence-window-foot { display: flex; justify-content: space-between; margin-top: 2.5mm; color: #7c8b81; font-family: "Noto Sans SC", sans-serif; font-size: 7.25pt; }
+  .print-report-ending { break-before: page; page-break-before: always; }.print-ending-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-top: 9mm; border-top: 0.5pt solid #d3ddd4; border-left: 0.5pt solid #d3ddd4; }.print-ending-grid div { min-height: 17mm; padding: 3mm; border-right: 0.5pt solid #d3ddd4; border-bottom: 0.5pt solid #d3ddd4; }.print-ending-grid span, .print-ending-grid strong { display: block; }.print-ending-grid span { color: #728077; font-family: "Noto Sans SC", sans-serif; font-size: 7.5pt; }.print-ending-grid strong { margin-top: 2mm; color: #2b3d30; font-size: 9pt; overflow-wrap: anywhere; }
+  .print-record-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 7mm; margin-top: 9mm; }.print-record-grid section { min-height: 61mm; border-top: 1pt solid #4c6d56; padding-top: 3mm; }.print-record-grid h3 { margin: 0 0 2.5mm; color: #294933; font-size: 10.5pt; }.print-review-checklist ul { display: grid; gap: 3.5mm; margin: 0; padding: 0; list-style: none; color: #526359; font-size: 8.5pt; line-height: 1.65; }.print-review-checklist li { display: flex; gap: 2.5mm; }.print-review-checklist li span { display: inline-grid; width: 5mm; height: 5mm; flex: 0 0 5mm; place-items: center; border: 0.5pt solid #b5c3b7; color: #45624d; font-family: "Noto Sans SC", sans-serif; font-size: 6.5pt; }.print-review-notes p { margin: 0; color: #68776d; font-size: 8pt; line-height: 1.6; }.print-note-lines { display: grid; gap: 7mm; margin-top: 7mm; }.print-note-lines i { display: block; border-bottom: 0.5pt solid #d2ddd3; }.print-usage-boundary { display: grid; grid-template-columns: 18mm 1fr; gap: 3mm; margin-top: 8mm; border: 0.5pt solid #d6e0d7; padding: 3mm 3.5mm; background: #fbfdfb; color: #5f6f65; font-size: 8pt; line-height: 1.65; }.print-usage-boundary strong { color: #345340; }
 }
 
 .hero-grain {
