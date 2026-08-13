@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { SiteAttribution } from "./components/SiteAttribution";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import History from "./pages/History";
 import Home from "./pages/Home";
@@ -39,6 +40,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <SiteAttribution />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

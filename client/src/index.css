@@ -112,7 +112,7 @@
 @media print {
   @page { size: A4; margin: 13mm 14mm 15mm; }
   html, body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  nav, footer, button, .report-actions { display: none !important; }
+  nav, footer, button, .report-actions, .site-attribution { display: none !important; }
   body:has(#report) main > section:not(:has(#report)), body:has(#report) main > footer, body:has(#report) section:has(#report) > :not(#report) { display: none !important; }
   body, .report-shell { background: white !important; }
   .report-shell { margin: 0 !important; padding: 0 !important; }
