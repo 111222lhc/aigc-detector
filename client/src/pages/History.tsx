@@ -1,0 +1,18 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { startLogin } from "@/const";
+import { trpc } from "@/lib/trpc";
+import { ArrowLeft, ClipboardList, FileSearch, Loader2 } from "lucide-react";
+import { Link } from "wouter";
+
+const label: Record<"low" | "medium" | "high", string> = { low: "低风险", medium: "中风险", high: "高风险" };
+const colors: Record<"low" | "medium" | "high", string> = { low: "bg-[#eaf7ef] text-[#397f5a]", medium: "bg-[#fff3e5] text-[#b96522]", high: "bg-[#fff0ef] text-[#be4141]" };
+
+export default function History() {
+  const { isAuthenticated, loading } = useAuth();
+  const reports = trpc.detection.list.useQuery(undefined, { enabled: isAuthenticated });
+  if (loading) return <div className="grid min-h-screen place-items-center"><Loader2 className="animate-spin text-[#397c58]" /></div>;
+  if (!isAuthenticated) return <main className="grid min-h-screen place-items-center px-5"><div className="max-w-md text-center"><ClipboardList className="mx-auto h-10 w-10 text-[#3c855d]" /><h1 className="mt-5 text-2xl font-semibold text-[#24342b]">登录后查看报告历史</h1><p className="mt-3 text-sm leading-6 text-[#738177]">已保存的报告仅对对应账户可见，未登录检测不会保留原文。</p><Button className="mt-6 bg-[#286843]" onClick={startLogin}>登录并查看</Button><Link href="/"><Button variant="link" className="mt-3 block text-[#61746a]">返回检测页</Button></Link></div></main>;
+  return <main className="min-h-screen bg-[#f5f8f4] px-4 py-8 sm:px-7"><div className="mx-auto max-w-5xl"><Link href="/" className="inline-flex items-center gap-1 text-sm text-[#5e7568] hover:text-[#286843]"><ArrowLeft size={16} />返回检测页</Link><div className="mt-7 flex flex-wrap items-end justify-between gap-4"><div><div className="text-xs font-semibold tracking-[0.18em] text-[#668273]">SAVED REPORTS</div><h1 className="mt-2 text-3xl font-semibold text-[#27392f]">检测报告历史</h1></div><div className="text-sm text-[#75847b]">仅显示当前账户保存的近30份报告</div></div>{reports.isLoading ? <div className="mt-14 text-center text-sm text-[#849087]"><Loader2 className="mx-auto mb-3 animate-spin" />正在读取报告</div> : reports.data?.length ? <div className="mt-7 overflow-hidden rounded-2xl border border-[#e0e8e1] bg-white shadow-[0_12px_35px_rgba(43,60,47,0.05)]">{reports.data.map(report => <Link key={report.id} href={`/reports/${report.id}`} className="grid grid-cols-[1fr_auto] gap-4 border-b border-[#edf0ed] px-5 py-5 last:border-b-0 transition-colors hover:bg-[#f8fbf8] sm:grid-cols-[1fr_130px_110px_100px] sm:items-center sm:px-7"><div className="min-w-0"><div className="truncate font-medium text-[#314139]">{report.title}</div><div className="mt-1 text-xs text-[#849087]">{new Date(report.createdAt).toLocaleString("zh-CN", { hour12: false })} · {report.charCount.toLocaleString()} 字符 · {report.segmentCount} 段</div></div><div className="hidden text-sm text-[#708077] sm:block">{report.sourceType.toUpperCase()}</div><div className="text-right sm:text-left"><span className="font-mono text-xl font-semibold text-[#314139]">{report.overallScore}%</span></div><Badge className={`h-fit w-fit border-0 ${colors[report.riskLevel]}`}>{label[report.riskLevel]}</Badge></Link>)}</div> : <div className="mt-7 rounded-2xl border border-dashed border-[#cfdacf] bg-white px-6 py-16 text-center"><FileSearch className="mx-auto h-9 w-9 text-[#8ba398]" /><h2 className="mt-4 font-medium text-[#3b5044]">还没有保存的报告</h2><p className="mt-2 text-sm text-[#819087]">完成检测后点击“保存报告”，即可在这里回看三色标注结果。</p><Link href="/"><Button className="mt-5 bg-[#286843]">开始检测</Button></Link></div>}</div></main>;
+}
