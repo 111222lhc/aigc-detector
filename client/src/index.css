@@ -110,9 +110,20 @@
 }
 
 @media print {
-  nav, footer, button { display: none !important; }
+  @page { size: A4; margin: 12mm; }
+  html, body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  nav, footer, button, .report-actions { display: none !important; }
+  body:has(#report) main > section:not(:has(#report)), body:has(#report) main > footer, body:has(#report) section:has(#report) > :not(#report) { display: none !important; }
   body, .report-shell { background: white !important; }
-  .report-paper { box-shadow: none !important; border: 0 !important; }
+  .report-shell { margin: 0 !important; padding: 0 !important; }
+  .report-paper { box-shadow: none !important; border: 0 !important; border-radius: 0 !important; }
+  .report-cover { break-inside: avoid; }
+  .report-avoid-break, .report-detail-row { break-inside: avoid; page-break-inside: avoid; }
+  .report-break-before { break-before: page; page-break-before: always; }
+  .report-table-head { display: grid !important; }
+  .report-print-distribution { display: grid !important; gap: 0.8rem; padding: 1.25rem 0; }
+  .report-print-distribution + * { display: none; }
+  .recharts-responsive-container { display: none !important; }
 }
 
 .hero-grain {

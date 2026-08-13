@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { validateFileInput, validateTextForAnalysis, type SourceType } from "@/lib/paperValidation";
 import * as mammoth from "mammoth";
 import { AlertCircle, ArrowRight, BookOpenCheck, FileUp, History, Loader2, ScanSearch, ShieldCheck, Sparkles, X } from "lucide-react";
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 
 async function extractFileText(file: File, sourceType: SourceType): Promise<string> {
@@ -27,19 +27,48 @@ async function extractFileText(file: File, sourceType: SourceType): Promise<stri
   return pages.join("\n\n").trim();
 }
 
+const visualAuditReport: ReportData = {
+  overallScore: 58,
+  riskLevel: "medium",
+  charCount: 1824,
+  segmentCount: 4,
+  modelVersion: "iter5-char-2to4gram",
+  distribution: { low: 1, medium: 2, high: 1 },
+  segments: [
+    { position: 1, content: "本段用于开发环境下的报告视觉核验，展示低风险窗口在正式报告中的原文片段排版与颜色提示。", score: 18, riskLevel: "low", charCount: 48 },
+    { position: 2, content: "本段用于开发环境下的报告视觉核验，展示中风险窗口的分数、标记层级和表格阅读体验。", score: 46, riskLevel: "medium", charCount: 47 },
+    { position: 3, content: "本段用于开发环境下的报告视觉核验，展示高风险窗口在重点复核区域和逐段明细中的呈现方式。", score: 82, riskLevel: "high", charCount: 51 },
+    { position: 4, content: "本段用于开发环境下的报告视觉核验，展示另一处中风险窗口以及长报告分页时的单元间距。", score: 51, riskLevel: "medium", charCount: 48 },
+  ],
+};
+
+const liveAuditText = [
+  "本研究围绕高校学习场景中的文本辅助工具展开观察。研究首先梳理不同写作任务的结构要求，再根据访谈记录与公开材料归纳使用者在资料检索、提纲调整和语言润色环节的常见做法。",
+  "为避免把单一语言特征直接等同于作者身份，分析过程保留了写作目标、引用记录、修改痕迹和版本演变等上下文信息。研究结果仅用于说明文本模式的统计差异，不构成对个人或作品来源的最终判断。",
+  "在报告呈现方面，系统将较长文本切分为若干检测窗口，并把每个窗口的风险分数、等级与原文片段共同列出。阅读者可先关注较高分窗口，再回到全文核对论证逻辑、事实依据和个人写作过程。",
+].join("\n\n").repeat(3);
+
 export default function Home() {
   const [, navigate] = useLocation();
   const { user, isAuthenticated, loading } = useAuth();
-  const [title, setTitle] = useState("未命名文档");
+  const isVisualAudit = import.meta.env.DEV && new URLSearchParams(window.location.search).has("visual-audit-report");
+  const isLiveAudit = import.meta.env.DEV && new URLSearchParams(window.location.search).has("live-audit-report");
+  const [title, setTitle] = useState(() => isVisualAudit ? "报告版式视觉核验样稿" : "未命名文档");
   const [text, setText] = useState("");
   const [sourceType, setSourceType] = useState<SourceType>("text");
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [report, setReport] = useState<ReportData | null>(null);
+  const [report, setReport] = useState<ReportData | null>(() => isVisualAudit ? visualAuditReport : null);
   const fileRef = useRef<HTMLInputElement>(null);
   const analyze = trpc.detection.analyze.useMutation({ onSuccess: data => { setReport(data); window.setTimeout(() => document.getElementById("report")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); } });
   const save = trpc.detection.save.useMutation({ onSuccess: data => navigate(`/reports/${data.reportId}`) });
+  useEffect(() => {
+    if (!isLiveAudit) return;
+    setTitle("真实检测结果全链路核验文档");
+    setText(liveAuditText);
+    analyze.mutate({ title: "真实检测结果全链路核验文档", sourceType: "text", text: liveAuditText });
+  }, [isLiveAudit]);
 
   const processFile = async (file?: File) => {
     if (!file) return;

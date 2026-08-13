@@ -16,5 +16,5 @@ export default function ReportDetail() {
   if (!query.data) return <main className="grid min-h-screen place-items-center px-5 text-center"><div><h1 className="text-xl font-semibold text-[#304137]">未找到该报告</h1><p className="mt-2 text-sm text-[#7b8980]">报告可能不存在，或不属于当前账户。</p><Link href="/history"><Button variant="outline" className="mt-5">返回历史记录</Button></Link></div></main>;
   const report = query.data;
   const panel: ReportData = { overallScore: report.overallScore, riskLevel: report.riskLevel, charCount: report.charCount, segmentCount: report.segmentCount, modelVersion: report.modelVersion, distribution: report.distribution, segments: report.segments };
-  return <main className="min-h-screen bg-[#f1f5f1] px-4 py-7 sm:px-7"><div className="mx-auto max-w-6xl"><Link href="/history" className="inline-flex items-center gap-1 text-sm text-[#5e7568] hover:text-[#286843]"><ArrowLeft size={16} />报告历史</Link><ReportPanel report={panel} title={report.title} savedAt={report.createdAt} /></div></main>;
+  return <main className="min-h-screen bg-[#f1f5f1] px-4 py-7 sm:px-7"><div className="mx-auto max-w-6xl"><Link href="/history" className="inline-flex items-center gap-1 text-sm text-[#5e7568] hover:text-[#286843] print:hidden"><ArrowLeft size={16} />报告历史</Link><ReportPanel report={panel} title={report.title} savedAt={report.createdAt} /></div></main>;
 }
