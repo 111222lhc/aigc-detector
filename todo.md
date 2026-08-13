@@ -80,6 +80,6 @@
 - [x] 确认当前自有右下角署名可与托管环境标识并存，且不采用遮挡或篡改方式替换默认标识
 - [x] 将自有右下角署名更新为“long with Manus”，并确保不进入打印报告
 - [x] 完成“long with Manus”自有右下角署名的桌面端视觉核验
-- [ ] 保存包含“long with Manus”署名更新的检查点，并记录版本号
-- [ ] 将最新更改同步至公开 GitHub main 分支
-- [ ] 确认线上版本包含新的自有署名并补记发布结果
+- [x] 保存包含“long with Manus”署名更新的检查点，并记录版本号；检查点 f6a3ee2a 已自动发布
+- [x] 将最新更改同步至公开 GitHub main 分支；已推送 f6a3ee2 至 111222lhc/aigc-detector/main
+- [x] 确认线上版本包含新的自有署名并补记发布结果；生产页面已显示“long with Manus”，托管环境“Made with Manus”标识保持不变
