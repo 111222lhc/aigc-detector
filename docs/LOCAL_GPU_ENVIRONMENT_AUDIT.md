@@ -24,16 +24,18 @@
 
 Conda 环境历史记录显示基础 Python 环境使用 Anaconda `defaults/win-64` 软件包创建。关键 Python 包均位于项目私有目录，而不是系统级 Python 的 `site-packages`。
 
-此前安装遵循“优先使用可信国内镜像”的要求，但现有 `pip` 安装元数据和 Conda 历史不会保存每一个历史下载请求的完整索引 URL；本次 `pip config list -v` 也未显示项目级固定 `index-url`。因此，**不能事后将具体国内镜像名称写成已证明事实**。
+隔离环境的生效配置可由 `python -m pip config get global.index-url` 直接复核，结果为 `https://pypi.tuna.tsinghua.edu.cn/simple`。因此，当前及后续通过该隔离解释器发起的标准 pip 依赖安装会优先使用清华大学开源软件镜像站。Conda 基础环境的 `conda-meta/history` 同时记录了 Anaconda `defaults/win-64` 软件包来源。
+
+不过，pip 安装元数据和 Conda 历史不会保存**每一个过去下载请求**的完整重定向链、镜像命中记录或二进制文件的服务器访问日志。因此，可以证明当前环境的优先镜像配置，却不应将某一个既有轮子在历史某次安装中实际命中的具体 CDN URL 写成已验证事实。
 
 | 下载类别 | 当前可复核来源 | 不应作出的超出证据声明 |
 |---|---|---|
 | Conda 基础环境 | `conda-meta/history` 中的 `defaults/win-64` 条目 | 不推断每个 Conda 包的镜像代理路径 |
-| CUDA PyTorch | 本地版本 `2.9.1+cu126` 与项目私有环境中的包元数据 | 不声称可从现有元数据还原历史 pip 索引 URL |
+| CUDA PyTorch | 本地版本 `2.9.1+cu126`、PyTorch CUDA `12.6` 与项目级清华镜像配置 | 不声称可从现有元数据还原某次历史下载的具体 CDN URL |
 | Transformers 生态 | 已安装版本与本地导入验证 | 不将包元数据视为下载服务器日志 |
 | 公开模型权重 | `yuchuantian/AIGC_detector_zhv2` 与 `Qwen/Qwen2.5-0.5B-Instruct` 的本地模型目录和已保存哈希 | 不以本记录替代上游许可证或发布完整性核验 |
 
-后续任何依赖或模型下载都必须单独记录精确索引/镜像 URL、命令、包版本、SHA-256、许可证链接与 CUDA/PyTorch 预检输出。对 PyTorch CUDA 轮子，应优先使用官方发布说明与受支持的索引配置，而不是仅按“镜像更快”选择未经验证的二进制来源。[1]
+后续任何依赖或模型下载都必须单独记录生效索引/镜像 URL、命令、包版本、SHA-256、许可证链接与 CUDA/PyTorch 预检输出。对 PyTorch CUDA 轮子，应优先使用官方发布说明与受支持的索引配置，而不是仅按“镜像更快”选择未经验证的二进制来源。[1]
 
 ## 归档与回滚工具
 
