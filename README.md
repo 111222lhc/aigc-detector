@@ -32,6 +32,10 @@
 - [模型卡](docs/MODEL_CARD.md)
 - [十轮迭代验证记录](docs/TEN_ITERATION_VALIDATION.md)
 - [冻结短文本回归审计](docs/FROZEN_SHORT_REGRESSION_AUDIT.md)
+- [微调候选的公开复现说明](docs/CANDIDATE_MODEL_REPRODUCIBILITY.md)
+- [本地微调复现运行手册](docs/LOCAL_FINE_TUNE_RUNBOOK.md)
+- [ONNX 与 Node.js 一致性验证](docs/ONNX_NODE_CONVERSION_VALIDATION_V1.md)
+- [本地模型服务操作指南](docs/LOCAL_MODEL_OPERATOR_GUIDE.md)
 
 ## 协作与部署
 
