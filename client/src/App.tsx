@@ -7,6 +7,7 @@ import { SiteAttribution } from "./components/SiteAttribution";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import History from "./pages/History";
 import Home from "./pages/Home";
+import ModelDisclosure from "./pages/ModelDisclosure";
 import ReportDetail from "./pages/ReportDetail";
 import ReportPreview from "./pages/ReportPreview";
 
@@ -15,6 +16,8 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/model-info"} component={ModelDisclosure} />
+      <Route path={"/model-disclosure"} component={ModelDisclosure} />
       <Route path={"/history"} component={History} />
       <Route path={"/report-preview"} component={ReportPreview} />
       <Route path={"/reports/:id"} component={ReportDetail} />
